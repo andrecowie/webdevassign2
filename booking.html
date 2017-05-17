@@ -1,46 +1,98 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<!---Responsiveness through bootstrap-->
-		<title>Booking</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-		<script src="{{ url_for('static', filename='js/bootstrap.min.js' )}}" type="text/javascript"></script>
-		<link rel="stylesheet" type="text/css" href="css/booking.css">
-		<script src="js/booking.js" type="text/javascript"></script>
-	</head>
-	<body>
-		<div class="container-fluid">
-			<div class="row col-xs-12 col-md-10 col-md-offset-1 col-sm-12 col-lg-offset-3 col-lg-6">
-			
-				<h3>Booking</h3>
-				<div class="col-lg-4 col-lg-offset-4">
-					<form>
-						<div class="form-group">
-							<label for="username">Name</label>
-							<input required class="form-control" name="username" type="text">
+<head>
+	<!---Responsiveness through bootstrap-->
+	<title>Booking</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap-datetimepicker.min.css">
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="row col-xs-12 col-md-10 col-md-offset-1 col-sm-12 col-lg-offset-3 col-lg-6" >
+
+			<h3>Booking</h3>
+			<div class="col-lg-4 col-lg-offset-4">
+				<form>
+					<div class="form-group">
+						<label for="username">Name</label>
+						<input required class="form-control" name="username" type="text">
+					</div>
+					<div class="form-group">
+						<label for="phonenumber">Phone #</label>
+						<input required class="form-control" name="phonenumber" type="tel">
+					</div>
+					<h4>Pickup</h4>
+					<div class="form-group">
+						<label for="unit">Unit #</label>
+						<input class="form-control" name="unit" type="number" placeholder="-------------------------------------------------------------------------------------------------">
+					</div>
+					<div class="form-group">
+						<label for="streetnumber">Street #</label>
+						<input required class="form-control" name="streetnumber" type="number">
+					</div>
+					<div class="form-group">
+						<label for="street" placeholder="-">Street</label>
+						<input required class="form-control" name="street" type="text">
+					</div>
+					<div class="form-group">
+						<label for="suburb">Suburb</label>
+						<input required class="form-control" name="suburb" placeholder="Auckland Central" type="text">
+					</div>
+					<div class="form-group">
+						<label for="dtp_input1" >Pickup Time</label>
+						<div class="input-group date form_datetime col-md-5" data-date="2017-06-1T10:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+							<input class="form-control" size="16" type="text" required value="" readonly>
+							<span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+							<span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
 						</div>
-						<div class="form-group">
-							<label for="phonenumber">Phone #</label>
-							<input required class="form-control" name="phonenumber" type="tel">
-						</div>
-						<h4>Pickup</h4>
-						<div class="form-group">				
-							<label for="unit">Unit #</label>
-							<input class="form-control" name="unit" type="number" placeholder="-------------------------------------------------------------------------------------------------">	
-							<label for="streetnumber" >Street #</label>
-							<input required class="form-control" name="streetnumber" type="number">
-							<label for="street" placeholder="-">Street</label>
-							<input required class="form-control" name="street" type="text">
-							<label for="suburb">Suburb</label>
-							<input required class="form-control" name="suburb" placeholder="Auckland Central" type="text">
-							<button type=button onclick="submitData()" class="btn btn-default">Request<span> taxi</span></button>
-						</div>
-					
-					</form>
-				</div>
+						<input type="hidden" id="dtp_input1" value="" /><br/>
+					</div>
+					<button type=button onclick="submitData()" class="btn btn-default">Request<span> taxi</span></button>
 			</div>
+
+			</form>
 		</div>
-	</body>
+	</div>
+	</div>
+</body>
+<script type="text/javascript">
+    $('.form_datetime').datetimepicker({
+        //language:  'fr',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		forceParse: 0,
+        showMeridian: 1
+    });
+	$('.form_date').datetimepicker({
+        language:  'fr',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		minView: 2,
+		forceParse: 0
+    });
+	$('.form_time').datetimepicker({
+        language:  'fr',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 1,
+		minView: 0,
+		maxView: 1,
+		forceParse: 0
+    });
+</script>
+
 </html>
