@@ -10,6 +10,8 @@
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 	<script src="js/bootstrap.min.js" type="text/javascript"></script>
 	<script src="js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+	<script type="text/javascript" src="js/xhr.js"></script>
+	<script src="js/methods.js" type="text/javascript"></script>
 </head>
 
 <body>
@@ -53,7 +55,7 @@
 						</div>
 						<input type="hidden" id="dtp_input1" value="" /><br/>
 					</div>
-					<button type=button onclick="submitData()" class="btn btn-default">Request<span> taxi</span></button>
+					<button type="button" onclick="submitData()" class="btn btn-default">Request<span> taxi</span></button>
 			</div>
 
 			</form>
@@ -62,8 +64,10 @@
 	</div>
 </body>
 <script type="text/javascript">
+var d = new Date();
     $('.form_datetime').datetimepicker({
         //language:  'fr',
+				startDate: d.getFullYear()+"-"+d.getMonth()+1+"-"+d.getDate(),
         weekStart: 1,
         todayBtn:  1,
 		autoclose: 1,
@@ -73,7 +77,7 @@
         showMeridian: 1
     });
 	$('.form_date').datetimepicker({
-        language:  'fr',
+		startDate: d.getFullYear()+"-"+d.getMonth()+1+"-"+d.getDate(),
         weekStart: 1,
         todayBtn:  1,
 		autoclose: 1,
@@ -83,7 +87,7 @@
 		forceParse: 0
     });
 	$('.form_time').datetimepicker({
-        language:  'fr',
+		startDate: d.getFullYear()+"-"+d.getMonth()+1+"-"+d.getDate(),
         weekStart: 1,
         todayBtn:  1,
 		autoclose: 1,
