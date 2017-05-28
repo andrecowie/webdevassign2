@@ -75,11 +75,12 @@ function submitData() {
     }
     if (document.getElementById("nameerror") == null && document.getElementById("phoneerror") == null && document.getElementById("streetnumerror") == null && document.getElementById("streeterror") == null && document.getElementById("suburberror") == null && document.getElementById("timeerror") == null) {
         var xhr = createRequest();
-        var url = "methods.php?name=" + inputValues[0].value + "&phone=" + inputValues[1].value + "&unit=" + inputValues[2].value + "&streetnum=" + inputValues[3].value + "&street=" + inputValues[4].value + "&suburb=" + inputValues[5].value + "&time=" + inputValues[6].value;
+        var url = "methods.php?name=" + inputValues[0].value + "&phone=" + inputValues[1].value + "&unit=" + (inputValues[2].value ? inputValues[2].value : "NULL") + "&streetnum=" + inputValues[3].value + "&street=" + inputValues[4].value + "&suburb=" + inputValues[5].value + "&time=" + inputValues[6].value;
         xhr.open("GET", url, true);
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 alert("Your Booking Has Been Submitted.");
+                console.log(xhr.responseText);
             }
         }
         xhr.send(null);
