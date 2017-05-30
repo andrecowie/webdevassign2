@@ -1,3 +1,4 @@
+//Function to handle the submitting of a new booking request.
 function submitData() {
     var inputValues = [];
     $("form :input").each(function() {
@@ -38,16 +39,21 @@ function submitData() {
         removeWarning("suburberror");
     }
 
-    //Pickup Time Empty
     if (inputValues[6].value == "") {
-        createWarning("timeerror", inputValues[6].parentNode, "Please give a pickup time");
+        createWarning("suburbdesterror", inputValues[6], "Please give a destination suburb");
+    } else {
+        removeWarning("suburbdesterror");
+    }
+    //Pickup Time Empty
+    if (inputValues[7].value == "") {
+        createWarning("timeerror", inputValues[7].parentNode, "Please give a pickup time");
     } else {
         removeWarning("timeerror");
 
         //Logic for when user tries to book taxi today but hours or minutes in the past. Throw an error
 
         var d = new Date();
-        var timeArr = inputValues[6].value.split(" ");
+        var timeArr = inputValues[7].value.split(" ");
         var monthNames = ["January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
         ];
@@ -63,24 +69,23 @@ function submitData() {
             }
             // if input hours in the past throw error
             if (hour < d.getHours()) {
-                createWarning("timeerror", inputValues[6].parentNode, "Sorry our taxi drivers cannot go back in time.");
+                createWarning("timeerror", inputValues[7].parentNode, "Sorry our taxi drivers cannot go back in time.");
                 //if in the current hour check minutes
             } else if (hour == d.getHours()) {
                 //if minutes in the past throw error
                 if (min < d.getMinutes()) {
-                    createWarning("timeerror", inputValues[6].parentNode, "Sorry our taxi drivers cannot go back in time.");
+                    createWarning("timeerror", inputValues[7].parentNode, "Sorry our taxi drivers cannot go back in time.");
                 }
             }
         }
     }
     if (document.getElementById("nameerror") == null && document.getElementById("phoneerror") == null && document.getElementById("streetnumerror") == null && document.getElementById("streeterror") == null && document.getElementById("suburberror") == null && document.getElementById("timeerror") == null) {
         var xhr = createRequest();
-        var url = "methods.php?name=" + inputValues[0].value + "&phone=" + inputValues[1].value + "&unit=" + (inputValues[2].value ? inputValues[2].value : "NULL") + "&streetnum=" + inputValues[3].value + "&street=" + inputValues[4].value + "&suburb=" + inputValues[5].value + "&time=" + inputValues[6].value;
+        var url = "methods.php?name=" + inputValues[0].value + "&phone=" + inputValues[1].value + "&unit=" + (inputValues[2].value ? inputValues[2].value : "NULL") + "&streetnum=" + inputValues[3].value + "&street=" + inputValues[4].value + "&suburb=" + inputValues[5].value + "&destsuburb=" + inputValues[6].value + "&time=" + inputValues[7].value;
         xhr.open("GET", url, true);
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200) {
-                alert("Your Booking Has Been Submitted.");
-                console.log(xhr.responseText);
+                alert(xhr.responseText);
             }
         }
         xhr.send(null);
@@ -106,4 +111,95 @@ function removeWarning(id) {
         error.parentNode.removeChild(error);
     }
 
+}
+
+//Function to get the unassigned bookings
+function getBookings(){
+	if($("#unassigned-bookings").length){
+        hideBookingTable(document.getElementById("hideBooking"));
+        getBookings();
+	}else{
+		var xhr = createRequest();
+        var url = "methods.php?getunassigned=True";
+        xhr.open("GET", url, true);
+        xhr.onreadystatechange = function(){
+            if (xhr.readyState == 4 && xhr.status == 200){
+                var x;
+                if (xhr.responseText.length > 0){
+                     x = JSON.parse(xhr.responseText);
+                }else{
+                    x = undefined;
+                }
+                if(x){
+                    if(x.length > 0){
+                        var table = document.createElement("table");
+                        table.setAttribute("id", "unassigned-bookings");
+                        table.setAttribute("class", "table");
+                        var tableHead = document.createElement("THEAD");
+                        var tableBody = document.createElement("TBODY");
+                        var tableHeadRow = document.createElement("tr");
+                        var keys = Object.keys(x[0]);
+                        for (z in keys){
+                            var a = document.createElement("td");
+                            a.innerHTML =keys[z];
+                            tableHeadRow.appendChild(a);
+                        }
+                        for(y in x){
+                            var tr = document.createElement("tr");
+                            for (z in x[y]){
+                                var td = document.createElement("td");
+                                td.innerHTML = x[y][z];
+                                tr.appendChild(td);
+                            }
+                            tableBody.appendChild(tr);
+                        }
+                        tableHead.appendChild(tableHeadRow);
+                        table.appendChild(tableHead);
+                        table.appendChild(tableBody);
+                        var hideBookings = document.createElement("button");
+                        hideBookings.setAttribute("type", "button");
+                        hideBookings.setAttribute("class", "btn btn-default");
+                        hideBookings.setAttribute("onclick", "hideBookingTable(this)");
+                        hideBookings.setAttribute("id", "hideBooking");
+                        hideBookings.innerHTML =  "Hide Bookings";
+                        $('div').get(1).appendChild(hideBookings);
+                        $('div').get(1).appendChild(table);
+                    }
+                }else{
+                    alert("No Unassigned Bookings Currently.");
+                }
+            }
+        }
+        xhr.send(null);
+	}
+}
+
+//Function called when trying to assign a taxi
+//Prompt admin for input of booking ref then handle request
+function assignTaxi() {
+    var bookingref = prompt("Please Enter A Booking Reference Number.");
+    if(bookingref){
+        var xhr = createRequest();
+        var url = "methods.php";
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.onreadystatechange = function(){
+            if (xhr.readyState == 4 && xhr.status == 200){
+                if(xhr.responseText == 'Success'){
+                    hideBookingTable(document.getElementById("hideBooking"));
+                    getBookings();
+                    alert("The booking request "+bookingref+" has been properly assigned.");
+                }else{
+                    alert(xhr.responseText);
+                }
+            }
+        }
+        xhr.send("ref="+bookingref);
+    }
+}
+
+//quick function to remove the table and the button of the bookings
+function hideBookingTable(x){
+    $("#unassigned-bookings").remove();
+    $(x).remove();
 }
