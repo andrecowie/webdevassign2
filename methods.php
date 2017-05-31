@@ -1,5 +1,8 @@
 <?php
-    $db = new mysqli('localhost', 'root', 'onetwo21', 'booking');
+    //$db = new mysqli('localhost', 'root', 'onetwo21', 'booking');
+	require_once ("../../settings.php");
+	$db = new mysqli($host, $user, $pswd, $dbnm);
+
 
     if ($db ->connect_errno > 0) {
         die('Unable to connect to db: ' . $db->connect_error . '.');
@@ -13,8 +16,21 @@
             $response = array();
             while ($row = $result->fetch_assoc()) {
                 $date = explode("-",$row['time']);
-                $time =
-                array_push($response, array('Ref Number' => $row['bknumber'], 'Name'=>$row['name'], 'Phone #' => $row['phone'], 'Unit #'=>$row['unit'], 'Street #'=>$row['streetnumber'], 'street'=>$row['street'], 'Suburb'=>$row['suburb'], 'Destination Suburb'=>$row['suburb'], 'Time'=>$row['time']));
+                $time = $date[1];
+				$date = $date[0];
+				$today = date('d F Y ');
+				$timetoday = date('h:i a');
+				if(strcmp($today,$date) == 0){
+					if($time-$timetoday < 2){
+						array_push($response, array('Ref Number' => $row['bknumber'], 'Name'=>$row['name'], 'Phone #' => $row['phone'], 'Unit #'=>$row['unit'], 'Street #'=>$row['streetnumber'], 'street'=>$row['street'], 'Suburb'=>$row['suburb'], 'Destination Suburb'=>$row['suburb'], 'Time'=>$row['time']));
+					}else if($time-$timetoday == 2){
+						$mins = explode(':',$time)[1];
+						$mins =  explode(' ',$mins)[0];
+						if($mins <= date('i')){
+							array_push($response, array('Ref Number' => $row['bknumber'], 'Name'=>$row['name'], 'Phone #' => $row['phone'], 'Unit #'=>$row['unit'], 'Street #'=>$row['streetnumber'], 'street'=>$row['street'], 'Suburb'=>$row['suburb'], 'Destination Suburb'=>$row['suburb'], 'Time'=>$row['time']));
+						} 
+					}
+				}
             }
             echo json_encode($response);
         }
@@ -49,7 +65,7 @@
             $timetime = explode("-", $time);
             echo "Your taxi has been booked and your reference number is ".$db->insert_id.". You will be picked up in front of your provided address at ".$timetime[1]." on the ".$timetime[0];
         } else {
-            echo "Fail";
+            echo "Fail".$sql;
         }
     }
     $db->close();
